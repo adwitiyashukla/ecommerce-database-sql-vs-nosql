@@ -1,0 +1,82 @@
+[app]
+engines = ["postgres", "mysql", "dynamodb"]
+low_stock = 5
+results_dir = "results"
+
+[data]
+seed = 7
+scale = 1.0
+start_date = "2025-01-01"
+days = 365
+out_dir = "data/csv"
+
+[postgres]
+mode = "managed"
+bin_dir = "engines/pgsql/bin"
+host = "127.0.0.1"
+port = 54320
+user = "postgres"
+password = ""
+database = "stockpile"
+data_dir = "data/postgres"
+
+[postgres.settings]
+shared_buffers = "512MB"
+max_connections = 200
+max_wal_size = "4GB"
+checkpoint_timeout = "15min"
+synchronous_commit = "on"
+deadlock_timeout = "1s"
+track_io_timing = "on"
+
+[mysql]
+mode = "managed"
+bin_dir = "engines/mysql/bin"
+host = "127.0.0.1"
+port = 33070
+user = "root"
+password = ""
+database = "stockpile"
+data_dir = "data/mysql"
+binlog = true
+
+[mysql.settings]
+innodb_buffer_pool_size = "512M"
+max_connections = 300
+innodb_flush_log_at_trx_commit = 1
+sync_binlog = 1
+innodb_lock_wait_timeout = 50
+
+[dynamodb]
+mode = "managed"
+endpoint = "http://127.0.0.1:8000"
+region = "us-east-1"
+table = "stockpile"
+local_dir = "engines/dynamodb"
+java = "java"
+heap = "1g"
+in_memory = true
+data_dir = "data/dynamodb"
+sales_shards = 8
+load_threads = 32
+
+[check]
+samples = 200
+writes = 300
+
+[bench]
+clients = 8
+processes = 2
+calls = 2000
+warmup = 200
+
+[flash]
+clients = 64
+processes = 8
+stock = 5000
+buckets = 16
+max_seconds = 120.0
+strategies = ["naive", "row_lock", "conditional", "version", "serializable", "transaction", "buckets"]
+
+[isolation]
+step_wait = 1.0

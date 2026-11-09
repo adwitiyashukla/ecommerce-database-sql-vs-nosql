@@ -1,0 +1,81 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install ruff
+      - run: ruff check src tests
+      - run: ruff format --check src tests
+
+  test:
+    name: test (postgres ${{ matrix.postgres }}, mysql ${{ matrix.mysql }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - postgres: "16"
+            mysql: "8.4"
+            python: "3.11"
+          - postgres: "18"
+            mysql: "9.7"
+            python: "3.13"
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+      mysql:
+        image: mysql:${{ matrix.mysql }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 60
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+    env:
+      STOCKPILE_SET: 'postgres.mode="external";postgres.port=5432;mysql.mode="external";mysql.port=3306;dynamodb.mode="external";dynamodb.endpoint="http://127.0.0.1:8000"'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: sudo apt-get update && sudo apt-get install -y libmysqlclient-dev pkg-config
+      - run: pip install -e ".[dev]"
+      - run: python -m stockpile status
+      - run: python -m pytest -q
+      - name: pipeline at small scale
+        run: >-
+          python -m stockpile all
+          --set data.scale=0.003
+          --set 'data.out_dir="data/ci_csv"'
+          --set bench.calls=200
+          --set bench.warmup=20
+          --set bench.clients=4
+          --set flash.clients=8
+          --set flash.processes=2
+          --set flash.stock=300
+          --set flash.buckets=4
