@@ -99,7 +99,7 @@ class PostgresServer:
             ]
         )
         with open(self.data / "postgresql.conf", "a", encoding="utf-8") as handle:
-            handle.write("\ninclude_if_exists = 'stockpile.conf'\n")
+            handle.write("\ninclude_if_exists = 'ecomdb.conf'\n")
         return True
 
     def write_settings(self):
@@ -112,7 +112,7 @@ class PostgresServer:
             **self.cfg.settings,
         }
         text = "".join(setting_line(k, v) + "\n" for k, v in values.items())
-        (self.data / "stockpile.conf").write_text(text, encoding="utf-8")
+        (self.data / "ecomdb.conf").write_text(text, encoding="utf-8")
 
     def running(self):
         if not self.initialized():

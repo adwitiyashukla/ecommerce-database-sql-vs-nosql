@@ -1,10 +1,10 @@
-# stockpile
+# ecommerce-database-sql-vs-nosql
 
 I built the same online marketplace database three times, on PostgreSQL, MySQL and DynamoDB, and ran the same data and the same 12 queries on all of them. The store works like Amazon or Flipkart. One product can have offers from many sellers, every offer has its own price and stock, and orders go through checkout, shipping and cancel.
 
 The main thing I wanted to see was how the data model has to change when you go from normal tables to a single DynamoDB table. I also wanted to see how each engine keeps stock correct when a lot of people buy the same item at once, and what each isolation level actually lets through.
 
-[![ci](https://github.com/adwitiyashukla/stockpile/actions/workflows/ci.yml/badge.svg)](https://github.com/adwitiyashukla/stockpile/actions/workflows/ci.yml)
+[![ci](https://github.com/adwitiyashukla/ecommerce-database-sql-vs-nosql/actions/workflows/ci.yml/badge.svg)](https://github.com/adwitiyashukla/ecommerce-database-sql-vs-nosql/actions/workflows/ci.yml)
 
 ## What it does
 
@@ -208,15 +208,15 @@ DynamoDB has no isolation levels for these races, so the rule has to go into the
 
 ## Running it
 
-You need Python 3.11 or newer and the three engines. In managed mode (the default) stockpile starts its own servers from engines/pgsql/bin, engines/mysql/bin and engines/dynamodb, or from PATH, and keeps their data under data/. I unpacked the PostgreSQL and MySQL zip archives for Windows and the DynamoDB Local zip into engines/. DynamoDB Local needs Java 17 or newer. In external mode it connects to servers you run yourself, which is what CI does with Docker containers.
+You need Python 3.11 or newer and the three engines. In managed mode (the default) ecomdb starts its own servers from engines/pgsql/bin, engines/mysql/bin and engines/dynamodb, or from PATH, and keeps their data under data/. I unpacked the PostgreSQL and MySQL zip archives for Windows and the DynamoDB Local zip into engines/. DynamoDB Local needs Java 17 or newer. In external mode it connects to servers you run yourself, which is what CI does with Docker containers.
 
 ```
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e ".[dev]"
-python -m stockpile up
-python -m stockpile all
-python -m stockpile down
+python -m ecomdb up
+python -m ecomdb all
+python -m ecomdb down
 ```
 
 On Linux or macOS activate with `source .venv/bin/activate`. The all command runs load, storage, check, bench, flash, isolation and report, and writes results/report.md. Every setting is in config.toml and gets validated when it loads. Any value can be changed for one run with `--set section.key=value`, for example `--set data.scale=0.05` for a small dataset.
@@ -224,8 +224,8 @@ On Linux or macOS activate with `source .venv/bin/activate`. The all command run
 The numbers above come from these two runs:
 
 ```
-python -m stockpile all --engines postgres,mysql
-python -m stockpile all --set data.scale=0.1 --set data.out_dir=data/csv_three --set postgres.database=stockpile_three --set mysql.database=stockpile_three --set dynamodb.table=stockpile_three --set app.results_dir=results/three
+python -m ecomdb all --engines postgres,mysql
+python -m ecomdb all --set data.scale=0.1 --set data.out_dir=data/csv_three --set postgres.database=ecomdb_three --set mysql.database=ecomdb_three --set dynamodb.table=ecomdb_three --set app.results_dir=results/three
 ```
 
 ## Tests
@@ -241,7 +241,7 @@ The 104 tests need all three engines running. They cover the config validation, 
 ```
 config.toml          every setting, validated on load
 schema/              postgres.sql, mysql.sql, dynamodb.json
-src/stockpile/
+src/ecomdb/
     generate.py      seeded marketplace data
     load.py          COPY, LOAD DATA and BatchWriteItem loaders
     sqlstore.py      the 12 patterns on PostgreSQL and MySQL

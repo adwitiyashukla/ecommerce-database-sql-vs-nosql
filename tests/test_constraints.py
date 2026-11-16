@@ -4,7 +4,7 @@ import MySQLdb
 import psycopg
 import pytest
 
-from stockpile.db import mysql_connect, pg_connect
+from ecomdb.db import mysql_connect, pg_connect
 
 BAD_WRITES = {
     "negative stock": "UPDATE offers SET available = -1 WHERE offer_id = 1",

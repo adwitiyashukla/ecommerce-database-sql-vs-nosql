@@ -1,5 +1,5 @@
-from stockpile import ddb
-from stockpile.sizing import index_entry_size, item_size, value_size
+from ecomdb import ddb
+from ecomdb.sizing import index_entry_size, item_size, value_size
 
 
 def test_string_and_number_sizes():

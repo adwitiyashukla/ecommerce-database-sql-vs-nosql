@@ -3,7 +3,7 @@ import MySQLdb
 import psycopg
 from botocore.config import Config as BotoConfig
 
-LOCAL_KEY = "stockpile"
+LOCAL_KEY = "ecomdb"
 
 
 def pg_connect(cfg, database=None, autocommit=True):

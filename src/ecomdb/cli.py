@@ -135,7 +135,7 @@ HANDLERS = {name: globals()[f"cmd_{name}"] for name in COMMANDS}
 
 def parse(argv):
     parser = argparse.ArgumentParser(
-        prog="stockpile",
+        prog="ecomdb",
         description="One e-commerce marketplace on PostgreSQL, MySQL and DynamoDB",
     )
     parser.add_argument("command", choices=COMMANDS)

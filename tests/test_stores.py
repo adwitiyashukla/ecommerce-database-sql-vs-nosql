@@ -3,7 +3,7 @@ import threading
 
 import pytest
 
-from stockpile.workload import RESERVED, open_store
+from ecomdb.workload import RESERVED, open_store
 
 MOMENT = "2026-01-05T12:00:00"
 

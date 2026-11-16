@@ -2,7 +2,7 @@ import csv
 from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 
-from stockpile import ddb, generate
+from ecomdb import ddb, generate
 
 from .conftest import base_config
 

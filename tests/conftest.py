@@ -3,17 +3,17 @@ from pathlib import Path
 
 import pytest
 
-from stockpile import config, flashsale, generate, load, servers
-from stockpile.workload import Dataset, open_store
+from ecomdb import config, flashsale, generate, load, servers
+from ecomdb.workload import Dataset, open_store
 
 ROOT = Path(__file__).resolve().parents[1]
 
 TEST_OVERRIDES = (
     "data.scale=0.003",
     'data.out_dir="data/test_csv"',
-    'postgres.database="stockpile_test"',
-    'mysql.database="stockpile_test"',
-    'dynamodb.table="stockpile_test"',
+    'postgres.database="ecomdb_test"',
+    'mysql.database="ecomdb_test"',
+    'dynamodb.table="ecomdb_test"',
     'app.results_dir="data/test_results"',
     "check.samples=30",
     "check.writes=80",
@@ -86,7 +86,7 @@ def loaded(cfg):
     generate.generate(cfg.data, cfg.app.low_stock)
     for engine in cfg.app.engines:
         if not servers.reachable(cfg, engine):
-            pytest.fail(f"{engine} is not reachable, start it with python -m stockpile up")
+            pytest.fail(f"{engine} is not reachable, start it with python -m ecomdb up")
         load.LOADERS[engine](cfg)
     return cfg
 

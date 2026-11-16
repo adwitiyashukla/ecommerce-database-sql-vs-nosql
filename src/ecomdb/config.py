@@ -407,7 +407,7 @@ def load(path=None, overrides=()):
             raw = tomllib.load(handle)
         except tomllib.TOMLDecodeError as exc:
             raise ConfigError(f"{path}: {exc}") from exc
-    items = [item for item in os.environ.get("STOCKPILE_SET", "").split(";") if item.strip()]
+    items = [item for item in os.environ.get("ECOMDB_SET", "").split(";") if item.strip()]
     for item in [*items, *overrides]:
         apply_override(raw, item)
     return from_raw(raw, path.resolve().parent)

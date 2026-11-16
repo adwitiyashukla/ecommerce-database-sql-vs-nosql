@@ -1,4 +1,4 @@
-from stockpile import flashsale, isolation, storage, workload
+from ecomdb import flashsale, isolation, storage, workload
 
 
 def test_engines_return_identical_results(loaded):

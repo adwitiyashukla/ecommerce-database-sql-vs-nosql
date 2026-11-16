@@ -2,8 +2,8 @@ from datetime import date
 
 import pytest
 
-from stockpile import config
-from stockpile.cli import main
+from ecomdb import config
+from ecomdb.cli import main
 
 from .conftest import ROOT
 

@@ -51,7 +51,7 @@ def table(header, rows):
 
 def render(cfg):
     data = saved(cfg)
-    parts = [f"# stockpile results (scale {cfg.data.scale})"]
+    parts = [f"# ecomdb results (scale {cfg.data.scale})"]
     if "load" in data:
         rows = []
         for engine, timings in data["load"].items():
